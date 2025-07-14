@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	config "github.com/preetsinghmakkar/crud-in-go/internal"
+	"github.com/preetsinghmakkar/crud-in-go/internal/config"
 )
 
 func main() {
