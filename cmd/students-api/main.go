@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/preetsinghmakkar/crud-in-go/internal/config"
+	"github.com/preetsinghmakkar/crud-in-go/internal/http/handlers/student"
+	"github.com/preetsinghmakkar/crud-in-go/internal/storage/sqlite"
 )
 
 func main() {
@@ -20,11 +22,23 @@ func main() {
 	// 3. Setup Router
 	// 4. Setup Server
 
-	// Load Configuration
+	// load config
 	cfg := config.MustLoad()
+	// database setup
+
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 
 	// Setup Router
 	router := http.NewServeMux()
+
+	router.HandleFunc("POST /api/students", student.New(storage))
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
+	router.HandleFunc("GET /api/students", student.GetList(storage))
 
 	// setup server
 	server := http.Server{
